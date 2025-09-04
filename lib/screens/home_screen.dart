@@ -1,6 +1,6 @@
-import 'package:booklibraryflutter/screens/book_list.dart';
-import 'package:booklibraryflutter/screens/filter_tabs.dart';
-import 'package:booklibraryflutter/screens/user_tabs.dart';
+import 'package:booklibraryflutter/widgets/book_list.dart';
+import 'package:booklibraryflutter/widgets/filter_tabs.dart';
+import 'package:booklibraryflutter/widgets/user_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_controller.dart';
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               );
             }
-            return const SizedBox(); // nothing if not author filter
+            return const SizedBox();
           }),
           // Book List
           Expanded(child: BookList()),

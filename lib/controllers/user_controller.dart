@@ -40,6 +40,25 @@ class UserController extends GetxController {
             author: "Tara Westover",
             description: "A memoir about education",
           ),
+          Book(
+            id: 7,
+            name: "The Alchemist",
+            author: "Paulo Coelho",
+            description: "A philosophical novel",
+            isFavorite: true,
+          ),
+          Book(
+            id: 8,
+            name: "Becoming",
+            author: "Michelle Obama",
+            description: "Memoir of First Lady",
+          ),
+          Book(
+            id: 9,
+            name: "Educated",
+            author: "Tara Westover",
+            description: "A memoir about education",
+          ),
         ],
       ),
       User(
@@ -99,7 +118,9 @@ class UserController extends GetxController {
 
     if (filter.value == "author" && query.value.isNotEmpty) {
       return books
-          .where((b) => b.author.toLowerCase() == query.value.toLowerCase())
+          .where(
+            (b) => b.author.toLowerCase().contains(query.value.toLowerCase()),
+          )
           .toList();
     }
 
