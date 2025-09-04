@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Reading List',
+      title: 'Read Vault App',
       initialRoute: '/Dashboard',
       getPages: [
         GetPage(name: '/Dashboard', page: () => HomeScreen()),

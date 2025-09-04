@@ -1,13 +1,17 @@
+import 'dart:convert';
+
+import 'package:booklibraryflutter/controllers/base_api_controller.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import '../models/book.dart';
 import '../models/user.dart';
 
-class UserController extends GetxController {
-  // 1) Explicit reactive type (no `var`)
+class UserController extends BaseApiController {
   final RxList<User> users = <User>[].obs;
 
-  // Optional: Rxn is the idiomatic nullable Rx
-  final Rxn<User> currentUser = Rxn<User>();
+  final Rx<User?> currentUser = Rx<User?>(
+    null,
+  ); //final Rxn<User> currentUser = Rxn<User>();
 
   final RxString filter = "all".obs;
   final RxString query = "".obs;
@@ -15,8 +19,6 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    // 2) Explicitly typed list literals to avoid List<dynamic>
     users.addAll(<User>[
       User(
         name: "AKSHADA",
@@ -87,8 +89,8 @@ class UserController extends GetxController {
       ),
     ]);
 
-    // Safe pick
-    currentUser.value = users.isNotEmpty ? users.first : null;
+    currentUser.value = users.first;
+    // currentUser.value = users.isNotEmpty ? users.first : null;
   }
 
   void selectUser(User u) {
@@ -96,6 +98,37 @@ class UserController extends GetxController {
     // filter.value = "all";
     // query.value = "";
   }
+
+  // //Get books API
+  // Future<void> loadBooks(String , User currentUser) async {
+  //   try {
+  //     // API request
+  //     final response = await http.get(Uri.parse("$baseUrl/$currentUser/books"));
+
+  //     if (response.statusCode == 200) {
+  //       final List<dynamic> data = jsonDecode(response.body);
+
+  //       // Clear existing books
+  //       currentUser.books.clear();
+
+  //       // Loop through books
+  //       for (var bookJson in data) {
+  //         final book = Book.fromJson(bookJson);
+
+  //         // Explicitly mark as favourite if applicable
+  //         if (bookJson["favourite"] == true) {
+  //           book.isFavorite = true.obs;
+  //         }
+
+  //         currentUser.books.add(book);
+  //       }
+  //     } else {
+  //       print("Failed to load books: ${response.statusCode}");
+  //     }
+  //   } catch (err) {
+  //     print("Failed to load books: $err");
+  //   }
+  // }
 
   void addBook(Book book) {
     currentUser.value?.books.add(book);
