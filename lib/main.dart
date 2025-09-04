@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'screens/home_screen.dart';
 import 'screens/add_book_screen.dart';
-import 'screens/author_search_screen.dart';
+// import 'screens/author_search_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/Dashboard', page: () => HomeScreen()),
         GetPage(name: '/add-book', page: () => AddBookScreen()),
-        GetPage(name: '/search-by-author', page: () => AuthorSearchScreen()),
+        // GetPage(name: '/search-by-author', page: () => AuthorSearchScreen()),
       ],
     );
   }

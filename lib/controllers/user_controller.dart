@@ -90,16 +90,19 @@ class UserController extends GetxController {
     book.isFavorite.value = !book.isFavorite.value;
   }
 
-  List<Book> get filteredBooks {
+  List<Book> getFilteredBooks() {
     List<Book> books = currentUser.value?.books ?? [];
+
     if (filter.value == "favorite") {
-      books = books.where((b) => b.isFavorite.value).toList();
+      return books.where((b) => b.isFavorite.value).toList();
     }
+
     if (filter.value == "author" && query.value.isNotEmpty) {
-      books = books
+      return books
           .where((b) => b.author.toLowerCase() == query.value.toLowerCase())
           .toList();
     }
+
     return books;
   }
 }
