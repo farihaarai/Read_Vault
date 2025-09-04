@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reading Lists"),
+        title: Center(child: const Text("📖 Read Vault 📖")),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
@@ -24,15 +24,24 @@ class HomeScreen extends StatelessWidget {
               children: userController.users.map((u) {
                 bool isActive =
                     userController.currentUser.value?.name == u.name;
-                return Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isActive ? Colors.indigo : Colors.white,
-                      foregroundColor: isActive ? Colors.white : Colors.indigo,
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isActive
+                            ? Colors.indigo
+                            : Colors.white,
+                        foregroundColor: isActive
+                            ? Colors.white
+                            : Colors.indigo,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      onPressed: () => userController.selectUser(u),
+                      child: Text(u.name),
                     ),
-                    onPressed: () => userController.selectUser(u),
-                    child: Text(u.name),
                   ),
                 );
               }).toList(),
@@ -45,8 +54,8 @@ class HomeScreen extends StatelessWidget {
               backgroundColor: Colors.indigo,
               foregroundColor: Colors.white,
             ),
-            onPressed: () => Get.toNamed("/add"),
-            child: const Text("ADD 📖"),
+            onPressed: () => Get.toNamed("/add-book"),
+            child: const Text("ADD"),
           ),
           SizedBox(height: 25),
           // Filter Buttons
@@ -62,6 +71,9 @@ class HomeScreen extends StatelessWidget {
                       foregroundColor: userController.filter.value == "all"
                           ? Colors.white
                           : Colors.indigo,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
                     ),
                     onPressed: () {
                       userController.filter.value = "all";
@@ -69,6 +81,7 @@ class HomeScreen extends StatelessWidget {
                     child: const Text("All"),
                   ),
                 ),
+                SizedBox(width: 5),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -78,13 +91,17 @@ class HomeScreen extends StatelessWidget {
                       foregroundColor: userController.filter.value == "author"
                           ? Colors.white
                           : Colors.indigo,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
                     ),
                     onPressed: () {
-                      Get.toNamed("/author");
+                      Get.toNamed("/search-by-author");
                     },
                     child: const Text("Author"),
                   ),
                 ),
+                SizedBox(width: 5),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -94,6 +111,9 @@ class HomeScreen extends StatelessWidget {
                       foregroundColor: userController.filter.value == "favorite"
                           ? Colors.white
                           : Colors.indigo,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
                     ),
                     onPressed: () {
                       userController.filter.value = "favorite";
@@ -122,12 +142,17 @@ class HomeScreen extends StatelessWidget {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
-                          icon: Icon(
-                            book.isFavorite ? Icons.star : Icons.star_border,
-                            color: Colors.yellow,
+                        Obx(
+                          () => IconButton(
+                            icon: Icon(
+                              book.isFavorite.value
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.yellow,
+                            ),
+                            onPressed: () =>
+                                userController.toggleFavorite(book),
                           ),
-                          onPressed: () => userController.toggleFavorite(book),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),

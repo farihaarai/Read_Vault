@@ -3,19 +3,24 @@ import '../models/book.dart';
 import '../models/user.dart';
 
 class UserController extends GetxController {
-  var users = <User>[].obs;
-  var currentUser = Rx<User?>(null);
-  var filter = "all".obs;
-  var query = "".obs;
+  // 1) Explicit reactive type (no `var`)
+  final RxList<User> users = <User>[].obs;
+
+  // Optional: Rxn is the idiomatic nullable Rx
+  final Rxn<User> currentUser = Rxn<User>();
+
+  final RxString filter = "all".obs;
+  final RxString query = "".obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Predefined users
-    users.addAll([
+
+    // 2) Explicitly typed list literals to avoid List<dynamic>
+    users.addAll(<User>[
       User(
         name: "AKSHADA",
-        books: [
+        books: <Book>[
           Book(
             id: 1,
             name: "The Alchemist",
@@ -39,7 +44,7 @@ class UserController extends GetxController {
       ),
       User(
         name: "PATRICK",
-        books: [
+        books: <Book>[
           Book(
             id: 4,
             name: "Sapiens",
@@ -63,13 +68,14 @@ class UserController extends GetxController {
       ),
     ]);
 
-    currentUser.value = users[0];
+    // Safe pick
+    currentUser.value = users.isNotEmpty ? users.first : null;
   }
 
   void selectUser(User u) {
     currentUser.value = u;
-    filter.value = "all";
-    query.value = "";
+    // filter.value = "all";
+    // query.value = "";
   }
 
   void addBook(Book book) {
@@ -81,13 +87,13 @@ class UserController extends GetxController {
   }
 
   void toggleFavorite(Book book) {
-    book.isFavorite = !book.isFavorite;
+    book.isFavorite.value = !book.isFavorite.value;
   }
 
   List<Book> get filteredBooks {
-    var books = currentUser.value?.books ?? [];
+    List<Book> books = currentUser.value?.books ?? [];
     if (filter.value == "favorite") {
-      books = books.where((b) => b.isFavorite).toList();
+      books = books.where((b) => b.isFavorite.value).toList();
     }
     if (filter.value == "author" && query.value.isNotEmpty) {
       books = books

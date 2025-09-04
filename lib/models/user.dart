@@ -1,8 +1,10 @@
+import 'package:get/get.dart';
+
 import 'book.dart';
 
 class User {
   String name;
-  List<Book> books;
+  RxList<Book> books;
 
-  User({required this.name, required this.books});
+  User({required this.name, required List<Book> books}) : books = books.obs;
 }

@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Reading List',
-      initialRoute: '/',
+      initialRoute: '/Dashboard',
       getPages: [
-        GetPage(name: '/', page: () => HomeScreen()),
-        GetPage(name: '/add', page: () => AddBookScreen()),
-        GetPage(name: '/author', page: () => AuthorSearchScreen()),
+        GetPage(name: '/Dashboard', page: () => HomeScreen()),
+        GetPage(name: '/add-book', page: () => AddBookScreen()),
+        GetPage(name: '/search-by-author', page: () => AuthorSearchScreen()),
       ],
     );
   }
