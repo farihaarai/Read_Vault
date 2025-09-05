@@ -1,3 +1,4 @@
+import 'package:booklibraryflutter/controllers/author_controller.dart';
 import 'package:booklibraryflutter/controllers/book_controller.dart';
 import 'package:booklibraryflutter/models/author.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,10 @@ class AddBookScreen extends StatelessWidget {
   AddBookScreen({super.key});
   final UserController userController = Get.find();
   final BookController bookController = Get.find();
+  final AuthorController authorController = Get.find();
   final idController = TextEditingController();
   final nameController = TextEditingController();
-  final authorController = TextEditingController();
+  final authorNameController = TextEditingController();
   final descController = TextEditingController();
 
   @override
@@ -31,10 +33,33 @@ class AddBookScreen extends StatelessWidget {
               controller: nameController,
               decoration: const InputDecoration(labelText: "Name"),
             ),
-            TextField(
-              controller: authorController,
-              decoration: const InputDecoration(labelText: "Author"),
+            // TextField(
+            //   controller: authorNameController,
+            //   decoration: const InputDecoration(labelText: "Author"),
+            // ),
+            Obx(
+              () => DropdownButton<int>(
+                isExpanded: true,
+                hint: const Text("Select Author"),
+                value: authorController.selectedAuthorId.value == 0
+                    ? null
+                    : authorController.selectedAuthorId.value,
+                items: authorController.authors
+                    .map(
+                      (author) => DropdownMenuItem<int>(
+                        value: author.id,
+                        child: Text(author.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    authorController.selectedAuthorId.value = value;
+                  }
+                },
+              ),
             ),
+
             TextField(
               controller: descController,
               decoration: const InputDecoration(labelText: "Description"),
@@ -44,21 +69,18 @@ class AddBookScreen extends StatelessWidget {
               onPressed: () {
                 if (idController.text.isEmpty ||
                     nameController.text.isEmpty ||
-                    authorController.text.isEmpty ||
+                    authorController.selectedAuthorId.value == 0 ||
                     descController.text.isEmpty) {
                   Get.snackbar("Error", "Fill all fields");
                   return;
                 }
-                final author = Author(
-                  id: DateTime.now()
-                      .millisecondsSinceEpoch, // or another unique ID
-                  name: authorController.text,
-                  rating: 0, // you can allow user input later
+                final selectedAuthor = authorController.authors.firstWhere(
+                  (a) => a.id == authorController.selectedAuthorId.value,
                 );
                 final book = Book(
                   id: int.parse(idController.text),
                   name: nameController.text,
-                  author: author,
+                  author: selectedAuthor,
                   description: descController.text,
                 );
                 bookController.addBook(book);

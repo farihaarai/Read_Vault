@@ -68,7 +68,7 @@ final class BookController extends BaseApiController {
 
       // Update UI list
       books.add(newBook);
-
+      currentUser.books.add(newBook);
       return newBook;
     } else {
       print("Book not added: ${response.statusCode}");
@@ -78,8 +78,6 @@ final class BookController extends BaseApiController {
   // void addBook(Book book) {
   //   userController.currentUser.value?.books.add(book);
   // }
-
-  // load authors API
 
   void deleteBook(Book book) {
     userController.currentUser.value?.books.remove(book);

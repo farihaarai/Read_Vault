@@ -1,3 +1,4 @@
+import 'package:booklibraryflutter/controllers/author_controller.dart';
 import 'package:booklibraryflutter/controllers/book_controller.dart';
 import 'package:booklibraryflutter/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'screens/add_book_screen.dart';
 void main() {
   Get.put(UserController());
   Get.put(BookController());
+  Get.put(AuthorController());
   // Get.lazyPut(()=>UserController());
   runApp(const MyApp());
 }
