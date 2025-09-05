@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class FilterTabs extends StatelessWidget {
   FilterTabs({super.key});
-  final UserController userController = Get.put(UserController());
+  final UserController userController = Get.find();
   final TextEditingController queryController = TextEditingController();
   @override
   Widget build(BuildContext context) {

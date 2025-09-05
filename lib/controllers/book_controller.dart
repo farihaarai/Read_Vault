@@ -1,0 +1,85 @@
+import 'dart:convert';
+
+import 'package:booklibraryflutter/controllers/base_api_controller.dart';
+import 'package:booklibraryflutter/controllers/user_controller.dart';
+import 'package:booklibraryflutter/models/book.dart';
+import 'package:booklibraryflutter/models/user.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+final class BookController extends BaseApiController {
+  final RxList<Book> books = <Book>[].obs;
+  // final UserController userController = Get.find();
+  late UserController userController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    userController = Get.find();
+    loadBooks();
+  }
+
+  // Get books API
+  Future<void> loadBooks() async {
+    final currentUser = userController.currentUser.value!;
+    final url = Uri.parse('$baseUrl/${currentUser.name}/books');
+    print("the url is $url");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+
+      // Convert each item to Book
+      final fetchedBooks = data.map((json) => Book.fromJson(json)).toList();
+
+      // books.clear();
+      // books.addAll(fetchedBooks);
+      books.assignAll(fetchedBooks);
+
+      // currentUser.books.clear();
+      // currentUser.books.addAll(fetchedBooks);
+      currentUser.books.assignAll(fetchedBooks);
+
+      print("Fetched ${fetchedBooks.length} books for ${currentUser.name}");
+    } else {
+      print(
+        "Failed to fetch books for ${currentUser.name}, "
+        "status: ${response.statusCode}",
+      );
+    }
+  }
+
+  // add books API
+  // Future<Book> addB(User currentUser, Book book) {}
+
+  void addBook(Book book) {
+    userController.currentUser.value?.books.add(book);
+  }
+
+  void deleteBook(Book book) {
+    userController.currentUser.value?.books.remove(book);
+  }
+
+  void toggleFavorite(Book book) {
+    book.isFavorite.value = !book.isFavorite.value;
+  }
+
+  List<Book> getFilteredBooks() {
+    List<Book> list = books.toList();
+    String filter = userController.filter.value;
+    String query = userController.query.value;
+
+    if (filter == "favorite") {
+      return list.where((b) => b.isFavorite.value).toList();
+    }
+    if (filter == "author" && query.isNotEmpty) {
+      return list
+          .where(
+            (b) => b.author.name.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
+    }
+    return list;
+  }
+}

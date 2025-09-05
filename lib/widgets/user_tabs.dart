@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class UserTabs extends StatelessWidget {
   UserTabs({super.key});
-  final UserController userController = Get.put(UserController());
+  final UserController userController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Obx(

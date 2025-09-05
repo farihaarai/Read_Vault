@@ -7,7 +7,7 @@ import '../controllers/user_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-  final UserController userController = Get.put(UserController());
+  final UserController userController = Get.find();
   final TextEditingController queryController = TextEditingController();
 
   @override

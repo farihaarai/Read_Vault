@@ -1,9 +1,10 @@
+import 'package:booklibraryflutter/models/author.dart';
 import 'package:get/get.dart';
 
 class Book {
   int id;
   String name;
-  String author;
+  Author author;
   String description;
   RxBool isFavorite;
 
@@ -15,15 +16,16 @@ class Book {
     bool isFavorite = false,
   }) : isFavorite = isFavorite.obs;
 
-  // ✅ Factory constructor
+  // Factory constructor
   factory Book.fromJson(Map<String, dynamic> json) {
     int id = json['id'] is int
         ? json['id']
         : int.tryParse(json['id']?.toString() ?? '0') ?? 0;
+
     String name = json['name'] ?? '';
-    String author = json['author'] ?? '';
+    Author author = Author.fromJson(json['author']);
     String description = json['description'] ?? '';
-    bool isFavorite = json['isFavorite'] == true;
+    bool isFavorite = json['favourite'] == true || json['isFavorite'] == true;
 
     return Book(
       id: id,
@@ -32,16 +34,5 @@ class Book {
       description: description,
       isFavorite: isFavorite,
     );
-  }
-
-  // ✅ toJson method
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'author': author,
-      'description': description,
-      'isFavorite': isFavorite.value,
-    };
   }
 }

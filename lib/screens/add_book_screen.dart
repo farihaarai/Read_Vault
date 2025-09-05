@@ -1,3 +1,5 @@
+import 'package:booklibraryflutter/controllers/book_controller.dart';
+import 'package:booklibraryflutter/models/author.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_controller.dart';
@@ -6,7 +8,7 @@ import '../models/book.dart';
 class AddBookScreen extends StatelessWidget {
   AddBookScreen({super.key});
   final UserController userController = Get.find();
-
+  final BookController bookController = Get.find();
   final idController = TextEditingController();
   final nameController = TextEditingController();
   final authorController = TextEditingController();
@@ -47,13 +49,19 @@ class AddBookScreen extends StatelessWidget {
                   Get.snackbar("Error", "Fill all fields");
                   return;
                 }
+                final author = Author(
+                  id: DateTime.now()
+                      .millisecondsSinceEpoch, // or another unique ID
+                  name: authorController.text,
+                  rating: 0, // you can allow user input later
+                );
                 final book = Book(
                   id: int.parse(idController.text),
                   name: nameController.text,
-                  author: authorController.text,
+                  author: author,
                   description: descController.text,
                 );
-                userController.addBook(book);
+                bookController.addBook(book);
                 Get.back();
               },
               child: const Text("ADD"),
