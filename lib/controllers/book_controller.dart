@@ -29,18 +29,14 @@ final class BookController extends BaseApiController {
 
     if (response.statusCode == 200) {
       final List data = jsonDecode(response.body);
-
       // Convert each item to Book
       final fetchedBooks = data.map((json) => Book.fromJson(json)).toList();
-
       // books.clear();
       // books.addAll(fetchedBooks);
       books.assignAll(fetchedBooks);
-
       // currentUser.books.clear();
       // currentUser.books.addAll(fetchedBooks);
       currentUser.books.assignAll(fetchedBooks);
-
       print("Fetched ${fetchedBooks.length} books for ${currentUser.name}");
     } else {
       print(
@@ -51,11 +47,39 @@ final class BookController extends BaseApiController {
   }
 
   // add books API
-  // Future<Book> addB(User currentUser, Book book) {}
+  Future<Book?> addBook(Book book) async {
+    final currentUser = userController.currentUser.value!;
+    final url = Uri.parse('$baseUrl/$currentUser/books');
 
-  void addBook(Book book) {
-    userController.currentUser.value?.books.add(book);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "name": book.name,
+        "authorId": book.author.id,
+        "description": book.description,
+      }),
+    );
+    print("Add Book response: ${response.statusCode} ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+
+      final newBook = Book.fromJson(data);
+
+      // Update UI list
+      books.add(newBook);
+
+      return newBook;
+    } else {
+      print("Book not added: ${response.statusCode}");
+      return null;
+    }
   }
+  // void addBook(Book book) {
+  //   userController.currentUser.value?.books.add(book);
+  // }
+
+  // load authors API
 
   void deleteBook(Book book) {
     userController.currentUser.value?.books.remove(book);
