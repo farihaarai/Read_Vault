@@ -1,6 +1,5 @@
 import 'package:booklibraryflutter/controllers/author_controller.dart';
 import 'package:booklibraryflutter/controllers/book_controller.dart';
-import 'package:booklibraryflutter/models/author.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/user_controller.dart';
@@ -26,19 +25,37 @@ class AddBookScreen extends StatelessWidget {
           children: [
             TextField(
               controller: idController,
-              decoration: const InputDecoration(labelText: "ID"),
+              decoration: InputDecoration(
+                labelText: "ID",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
               keyboardType: TextInputType.number,
             ),
+            SizedBox(height: 15),
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: "Name"),
+              decoration: InputDecoration(
+                labelText: "Name",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
+            SizedBox(height: 15),
+
             // TextField(
             //   controller: authorNameController,
             //   decoration: const InputDecoration(labelText: "Author"),
             // ),
             Obx(
-              () => DropdownButton<int>(
+              () => DropdownButtonFormField<int>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 isExpanded: true,
                 hint: const Text("Select Author"),
                 value: authorController.selectedAuthorId.value == 0
@@ -59,10 +76,16 @@ class AddBookScreen extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(height: 15),
 
             TextField(
               controller: descController,
-              decoration: const InputDecoration(labelText: "Description"),
+              decoration: InputDecoration(
+                labelText: "Description",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

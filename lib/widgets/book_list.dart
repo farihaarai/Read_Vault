@@ -34,7 +34,12 @@ class BookList extends StatelessWidget {
                       book.isFavorite.value ? Icons.star : Icons.star_border,
                       color: Colors.yellow,
                     ),
-                    onPressed: () => bookController.toggleFavorite(book),
+                    onPressed: () {
+                      bookController.toggleFavorite(
+                        book,
+                        !book.isFavorite.value,
+                      );
+                    },
                   ),
                 ),
                 IconButton(

@@ -96,12 +96,61 @@ final class BookController extends BaseApiController {
     }
   }
 
-  void deleteBook(Book book) {
-    userController.currentUser.value?.books.remove(book);
+  // void deleteBook(Book book) {
+  //   userController.currentUser.value?.books.remove(book);
+  // }
+
+  // Delete Book API
+  Future<void> deleteBook(Book book) async {
+    final currentUser = userController.currentUser.value!;
+    final url = Uri.parse('$baseUrl/${currentUser.name}/books/${book.id}');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode == 200) {
+      // Remove from book list in this controller
+      books.removeWhere((b) => b.id == book.id);
+
+      // Also remove from the current user's book list
+      currentUser.books.removeWhere((b) => b.id == book.id);
+
+      print("Deleted book: ${book.name}");
+    } else {
+      print("Failed to delete: ${response.statusCode}");
+    }
   }
 
-  void toggleFavorite(Book book) {
-    book.isFavorite.value = !book.isFavorite.value;
+  // void toggleFavorite(Book book) {
+  //   book.isFavorite.value = !book.isFavorite.value;
+  // }
+
+  // Set favorite API
+  Future<void> toggleFavorite(Book book, bool favourite) async {
+    final currentUser = userController.currentUser.value!;
+    final url = Uri.parse(
+      '$baseUrl/${currentUser.name}/books/${book.id}?favourite=$favourite',
+    );
+
+    final response = await http.put(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final updatedBook = Book.fromJson(data);
+      // Update in books list
+      if (books.any((b) => b.id == updatedBook.id)) {
+        books[books.indexWhere((b) => b.id == updatedBook.id)] = updatedBook;
+      }
+
+      // Update in current user's books list
+      if (currentUser.books.any((b) => b.id == updatedBook.id)) {
+        currentUser.books[currentUser.books.indexWhere(
+              (b) => b.id == updatedBook.id,
+            )] =
+            updatedBook;
+      }
+    } else {
+      print("Failed to toggle favourite, status: ${response.statusCode}");
+    }
   }
 
   List<Book> getFilteredBooks() {
