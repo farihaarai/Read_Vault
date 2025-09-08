@@ -16,75 +16,130 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text("📖 Read Vault 📖")),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.indigo,
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          // User Tabs
-          UserTabs(),
-          const SizedBox(height: 20),
-
-          // Add Button
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 97, 111, 189),
-              foregroundColor: Colors.white,
+          // Gradient Background
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.indigo.shade400, Colors.indigo.shade100],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
-            onPressed: () => Get.toNamed("/add-book"),
-            child: const Text("ADD"),
           ),
-          const SizedBox(height: 25),
 
-          // Filter Buttons
-          FilterTabs(),
-          // Inline Author Search Bar
-          Obx(() {
-            if (userController.filter.value == "author") {
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: queryController,
-                        decoration: const InputDecoration(
-                          labelText: "Enter author name",
-                          border: OutlineInputBorder(),
-                        ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Greeting
+                  Obx(() {
+                    final userName =
+                        userController.currentUser.value?.name ?? '';
+                    return Text(
+                      "Welcome, $userName! 👋",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 20),
+
+                  // User Tabs
+                  UserTabs(),
+                  const SizedBox(height: 20),
+
+                  // Add Book Button
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.indigo,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          103,
-                          113,
-                          172,
-                        ),
-                        foregroundColor: Colors.white,
+                    onPressed: () => Get.toNamed("/add-book"),
+                    icon: const Icon(Icons.add),
+                    label: const Text(
+                      "Add Book",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      onPressed: () async {
-                        final books = await authorController.getBooksByAuthor(
-                          queryController.text,
-                        );
-                        final bookController = Get.find<BookController>();
-                        bookController.books.assignAll(books);
-                      },
-
-                      child: const Icon(Icons.search),
                     ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox();
-          }),
-          // Book List
-          Expanded(child: BookList()),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Filter Buttons
+                  FilterTabs(),
+                  const SizedBox(height: 15),
+
+                  // Author Search
+                  Obx(() {
+                    if (userController.filter.value == "author") {
+                      return Card(
+                        color: Colors.white.withOpacity(0.9),
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: queryController,
+                                  decoration: const InputDecoration(
+                                    hintText: "Search by author",
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.indigo[700],
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.all(12),
+                                ),
+                                onPressed: () async {
+                                  userController.query.value =
+                                      queryController.text;
+                                  final books = await authorController
+                                      .getBooksByAuthor(queryController.text);
+                                  final bookController =
+                                      Get.find<BookController>();
+                                  bookController.books.assignAll(books);
+                                },
+                                child: const Icon(Icons.search),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  }),
+                  const SizedBox(height: 15),
+
+                  // Book List in flexible container with gradient background
+                  Expanded(child: BookList()),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

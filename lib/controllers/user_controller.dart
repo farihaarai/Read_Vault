@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:ui_web';
 import 'package:booklibraryflutter/controllers/base_api_controller.dart';
 import 'package:booklibraryflutter/controllers/book_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import '../models/book.dart';
 import '../models/user.dart';
 
 class UserController extends BaseApiController {
-  final List<String> names = ["Akshada", "Pratik", "Fariha", "Arnold"];
+  final List<String> names = ["Akshada", "Pratik", "Fariha"];
   final RxList<User> users = <User>[].obs;
 
   final Rx<User?> currentUser = Rx<User?>(

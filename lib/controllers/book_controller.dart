@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:booklibraryflutter/controllers/base_api_controller.dart';
 import 'package:booklibraryflutter/controllers/user_controller.dart';
 import 'package:booklibraryflutter/models/book.dart';
-import 'package:booklibraryflutter/models/user.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
