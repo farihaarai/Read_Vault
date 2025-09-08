@@ -49,7 +49,7 @@ final class BookController extends BaseApiController {
   // add books API
   Future<Book?> addBook(Book book) async {
     final currentUser = userController.currentUser.value!;
-    final url = Uri.parse('$baseUrl/$currentUser/books');
+    final url = Uri.parse('$baseUrl/${currentUser.name}/books');
 
     final response = await http.post(
       url,
@@ -69,6 +69,7 @@ final class BookController extends BaseApiController {
       // Update UI list
       books.add(newBook);
       currentUser.books.add(newBook);
+
       return newBook;
     } else {
       print("Book not added: ${response.statusCode}");
@@ -78,6 +79,22 @@ final class BookController extends BaseApiController {
   // void addBook(Book book) {
   //   userController.currentUser.value?.books.add(book);
   // }
+
+  // Get Favorite Books API
+  Future<List<Book>> getFavBook() async {
+    final currentUser = userController.currentUser.value!;
+    final url = Uri.parse('$baseUrl/${currentUser.name}/books/fav');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      final fetchedBooks = data.map((json) => Book.fromJson(json)).toList();
+      return fetchedBooks;
+    } else {
+      print("failed to fetch favorite books");
+      return [];
+    }
+  }
 
   void deleteBook(Book book) {
     userController.currentUser.value?.books.remove(book);

@@ -1,3 +1,4 @@
+import 'package:booklibraryflutter/controllers/book_controller.dart';
 import 'package:booklibraryflutter/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 class FilterTabs extends StatelessWidget {
   FilterTabs({super.key});
   final UserController userController = Get.find();
+  final BookController bookController = Get.find();
   final TextEditingController queryController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -68,6 +70,7 @@ class FilterTabs extends StatelessWidget {
               ),
               onPressed: () {
                 userController.filter.value = "favorite";
+                bookController.getFavBook();
                 userController.query.value = "";
                 queryController.clear();
               },

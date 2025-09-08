@@ -1,3 +1,5 @@
+import 'package:booklibraryflutter/controllers/author_controller.dart';
+import 'package:booklibraryflutter/controllers/book_controller.dart';
 import 'package:booklibraryflutter/widgets/book_list.dart';
 import 'package:booklibraryflutter/widgets/filter_tabs.dart';
 import 'package:booklibraryflutter/widgets/user_tabs.dart';
@@ -8,6 +10,7 @@ import '../controllers/user_controller.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final UserController userController = Get.find();
+  final AuthorController authorController = Get.find();
   final TextEditingController queryController = TextEditingController();
 
   @override
@@ -64,9 +67,14 @@ class HomeScreen extends StatelessWidget {
                         ),
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: () {
-                        userController.query.value = queryController.text;
+                      onPressed: () async {
+                        final books = await authorController.getBooksByAuthor(
+                          queryController.text,
+                        );
+                        final bookController = Get.find<BookController>();
+                        bookController.books.assignAll(books);
                       },
+
                       child: const Icon(Icons.search),
                     ),
                   ],
