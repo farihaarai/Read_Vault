@@ -5,6 +5,7 @@ import 'package:booklibraryflutter/widgets/filter_tabs.dart';
 import 'package:booklibraryflutter/widgets/user_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import '../controllers/user_controller.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,6 +16,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ResponsiveBreakpointsData breakpoints = ResponsiveBreakpoints.of(
+      context,
+    );
+    final bool isMobile = breakpoints.isMobile;
     return Scaffold(
       body: Stack(
         children: [
@@ -35,46 +40,43 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Greeting
-                  Obx(() {
-                    final userName =
-                        userController.currentUser.value?.name ?? '';
-                    return Text(
-                      "Welcome, $userName! 👋",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  // Greeting + Top-right Add Button (tablet/desktop)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Obx(() {
+                          final userName =
+                              userController.currentUser.value?.name ?? '';
+                          return Text(
+                            "Welcome, $userName! 👋",
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          );
+                        }),
                       ),
-                    );
-                  }),
+                      if (!isMobile) _addBookButton(),
+                    ],
+                  ),
                   const SizedBox(height: 20),
 
                   // User Tabs
                   UserTabs(),
                   const SizedBox(height: 20),
 
-                  // Add Book Button
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.indigo,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  // Add Book Button (only for mobile)
+                  if (isMobile)
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: _addBookButton(),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    onPressed: () => Get.toNamed("/add-book"),
-                    icon: const Icon(Icons.add),
-                    label: const Text(
-                      "Add Book",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
 
                   // Filter Buttons
                   FilterTabs(),
@@ -141,6 +143,23 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _addBookButton() {
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.indigo,
+
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      onPressed: () => Get.toNamed("/add-book"),
+      icon: const Icon(Icons.add),
+      label: const Text(
+        "Add Book",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }
